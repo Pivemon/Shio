@@ -21,7 +21,7 @@ jobs:
       - name: Đóng gói thành file ZIP
         run: |
           # Nén file và tự động đặt tên theo version (vd: DAC_Monitor_v1.0.zip)
-          zip -r9 DAC_Monitor_${{ env.VERSION }}.zip . -x "*.git*" -x ".github/*" -x "*.md"
+          zip -r9 Shio_${{ env.VERSION }}.zip . -x "*.git*" -x ".github/*" -x "*.md"
 
       - name: Tạo Release và tải file đính kèm lên
         uses: softprops/action-gh-release@v2
