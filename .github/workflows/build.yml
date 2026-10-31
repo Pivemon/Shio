@@ -1,25 +1,33 @@
-name: Build KSU/Magisk Module
+name: Build and Release KSU/Magisk Module
 
 on:
   push:
-    branches: [ "main", "master" ]
-  workflow_dispatch: # Cho phép bạn bấm nút kích hoạt build thủ công trên web
+    tags:
+      - 'v*' # Chỉ kích hoạt workflow khi bạn đẩy một tag có tiền tố 'v' (ví dụ: v1.0, v1.1.2)
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # Bắt buộc phải có để GitHub Actions được phép ghi và tạo bản Release mới
+
     steps:
-      - name: Tải mã nguồn từ Repo
+      - name: Tải mã nguồn
         uses: actions/checkout@v4
+
+      - name: Trích xuất tên phiên bản từ Tag
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
       - name: Đóng gói thành file ZIP
         run: |
-          # Nén tất cả các file trong thư mục hiện tại
-          # Loại trừ các file/thư mục không cần thiết để module nhẹ nhất
-          zip -r9 DAC_Monitor_v1.0.zip . -x "*.git*" -x ".github/*" -x "*.md"
+          # Nén file và tự động đặt tên theo version (vd: DAC_Monitor_v1.0.zip)
+          zip -r9 DAC_Monitor_${{ env.VERSION }}.zip . -x "*.git*" -x ".github/*" -x "*.md"
 
-      - name: Xuất file Artifact
-        uses: actions/upload-artifact@v4
+      - name: Tạo Release và tải file đính kèm lên
+        uses: softprops/action-gh-release@v2
         with:
-          name: DAC_Monitor_Release
-          path: DAC_Monitor_v1.0.zip
+          name: DAC Monitor Phiên bản ${{ env.VERSION }}
+          draft: false
+          prerelease: false
+          files: DAC_Monitor_${{ env.VERSION }}.zip
+          generate_release_notes: true # Tự động tạo ghi chú phát hành dựa trên các commit
