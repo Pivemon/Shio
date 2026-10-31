@@ -1,0 +1,25 @@
+name: Build KSU/Magisk Module
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch: # Cho phép bạn bấm nút kích hoạt build thủ công trên web
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Tải mã nguồn từ Repo
+        uses: actions/checkout@v4
+
+      - name: Đóng gói thành file ZIP
+        run: |
+          # Nén tất cả các file trong thư mục hiện tại
+          # Loại trừ các file/thư mục không cần thiết để module nhẹ nhất
+          zip -r9 DAC_Monitor_v1.0.zip . -x "*.git*" -x ".github/*" -x "*.md"
+
+      - name: Xuất file Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: DAC_Monitor_Release
+          path: DAC_Monitor_v1.0.zip
