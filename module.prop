@@ -1,0 +1,7 @@
+id=dac_monitor
+name=Shio
+version=v1.0
+versionCode=1
+author=pivemon
+description=Theo dõi ALSA và tự động hiển thị Notification chứa thông số Sample Rate, Bit-depth và Bitrate thực tế của USB DAC cắm ngoài.
+updateJson=https://raw.githubusercontent.com/Pivemon/shio/main/update.json
